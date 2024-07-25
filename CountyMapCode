@@ -1,0 +1,52 @@
+import geopandas as gpd
+import folium
+from IPython.display import display
+
+# Paths to the shapefiles
+border_path = 'state/State.shp'
+counties_path = 'state/Counties_Shoreline.shp'
+
+# Read the border shapefile and counties shapefile
+border = gpd.read_file(border_path)
+border = border.simplify(tolerance=1)  # Adjust tolerance as needed
+
+counties = gpd.read_file(counties_path)
+
+# Create a folium map centered around New York State
+m = folium.Map(location=[42.6511674, -73.754968], zoom_start=7)
+
+# Define a style function to remove borders from shapefiles
+def style_function(feature):
+    return {
+        'fillColor': 'red',  # Set fill color to red
+        'fillOpacity': 0.1,  # Adjust fill opacity as needed
+        'weight': 0  # Set border weight to 0 to remove borders
+    }
+
+# Define a style function for border color and fill
+def style_functionB(feature):
+     return {
+         'fillColor': 'none', 
+         'color': 'black',  
+         'fillOpacity': 0.0,  
+         'weight': 1.5
+     }
+    
+# Define a style function for counties color and fill
+def style_functionC(feature):
+     return {
+         'fillColor': 'none', 
+         'color': 'black',  
+         'fillOpacity': 0.0,  
+         'weight': 0.75
+     }
+
+
+# Add the border GeoDataFrame
+folium.GeoJson(border, style_functionB).add_to(m)
+
+# Add the counties GeoDataFrame
+folium.GeoJson(counties, style_functionC).add_to(m)
+
+# Display the map in the Jupyter notebook
+display(m)
